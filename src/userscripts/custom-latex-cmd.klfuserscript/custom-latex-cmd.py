@@ -28,7 +28,7 @@ import re
 import os
 import sys
 import subprocess
-from pipes import quote as shellquote
+from shlex import quote as shellquote
 
 if sys.argv[1] == "--help":
     print("Usage: "+os.path.basename(sys.argv[0])+" <tex input file>")
