@@ -161,9 +161,11 @@ if(KLF_USE_CPACK)
     if(CMAKE_OSX_DEPLOYMENT_TARGET)
       set(CPACK_OSX_PACKAGE_VERSION "${CMAKE_OSX_DEPLOYMENT_TARGET}")
     else()
-      # get current Mac OS X version
-      exec_program(/usr/bin/sw_vers OUTPUT_VARIABLE sw_vers_output)
-      string(REGEX REPLACE "^(.|\n|\r)*ProductVersion: *" "" sw_vers_output1 "${sw_vers_output}")
+      # get current Mac OS X version.  Note sw_vers separates the field name from
+      # the value with tabs, not spaces.
+      execute_process(COMMAND /usr/bin/sw_vers OUTPUT_VARIABLE sw_vers_output
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+      string(REGEX REPLACE "^(.|\n|\r)*ProductVersion:[ \t]*" "" sw_vers_output1 "${sw_vers_output}")
       string(REGEX REPLACE "^([0-9]+)\\.([0-9]+)(.|\n|\r)*$" "\\1.\\2" this_osx_ver "${sw_vers_output1}")
       set(CPACK_OSX_PACKAGE_VERSION "${this_osx_ver}")
     endif()

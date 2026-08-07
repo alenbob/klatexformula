@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # custom-latex-cmd.py
 #   This file is part of the KLatexFormula Project.

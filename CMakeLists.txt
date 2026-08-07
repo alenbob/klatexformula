@@ -3,7 +3,7 @@
 # #################################### #
 # $Id$
 # #################################### #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 PROJECT(klatexformula)
 
@@ -400,12 +400,13 @@ endif()
 # Use Sparkle framework under Mac OS X?
 if(KLF_WS STREQUAL "mac")
   option(KLF_USE_SPARKLE "Use Sparkle Framework for auto-updates on Mac OS X" OFF)
-  # can only use if we are building a bundle
-  if (NOT KLF_MACOSX_BUNDLES)
-    message(FATAL_ERROR "Can only build with Sparkle framework when we are building a Mac OS X App bundle (use KLF_MACOSX_BUNDLES=1)")
-  endif()
 
   if(KLF_USE_SPARKLE)
+    # can only use if we are building a bundle
+    if (NOT KLF_MACOSX_BUNDLES)
+      message(FATAL_ERROR "Can only build with Sparkle framework when we are building a Mac OS X App bundle (use KLF_MACOSX_BUNDLES=1)")
+    endif()
+
     set(KLF_SPARKLE_FEED_URL "http://klatexformula.sourceforge.net/sparklefeed.xml"
       CACHE STRING "URL for Sparkle to check for updates")
     set(KLF_SPARKLE_FRAMEWORK "Sparkle.framework"

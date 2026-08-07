@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # gif-convert.py
 #   This file is part of the KLatexFormula Project.

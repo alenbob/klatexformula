@@ -241,15 +241,17 @@ if(KLF_BUILD_GUI)
     KLFSetIfNotDefined(KLF_INSTALL_DESKTOP_CATEGORIES "Qt;Office;")
     KLFSetIfNotDefined(KLF_INSTALL_SHARE_APPLICATIONS_DIR "share/applications/")
     KLFSetIfNotDefined(KLF_INSTALL_SHARE_PIXMAPS_DIR "share/pixmaps/")
-    KLFSetIfNotDefined(KLF_INSTALL_ICON_THEME "")
+    KLFSetIfNotDefined(KLF_INSTALL_ICON_THEME "share/icons/hicolor")
     KLFSetIfNotDefined(KLF_INSTALL_SHARE_MIME_PACKAGES_DIR "share/mime/packages/")
-  
-    # Reasonable Icon= entry given the installation settings
+
+    # The .desktop spec wants Categories= to end with a ';'; the trailing ';' is
+    # added by klatexformula.desktop.in, so make sure we don't end up with two.
+    string(REGEX REPLACE ";+$" "" KLF_INSTALL_DESKTOP_CATEGORIES
+      "${KLF_INSTALL_DESKTOP_CATEGORIES}")
+
+    # Icon= should be a bare icon name looked up in the icon theme (installed by
+    # KLF_INSTALL_ICON_THEME), not an absolute path to a pixmap.
     set(klf_icon "klatexformula")
-    if(KLF_INSTALL_SHARE_PIXMAPS_DIR)
-      KLFMakeAbsInstallPath(abs_share_pix_dir KLF_INSTALL_SHARE_PIXMAPS_DIR)
-      set(klf_icon "${abs_share_pix_dir}/klatexformula-64.png")
-    endif()
     KLFSetIfNotDefined(KLF_INSTALL_DESKTOP_ICON "${klf_icon}")
 
     message(STATUS "Will install linux desktop files (KLF_INSTALL_DESKTOP=<BOOL>):
