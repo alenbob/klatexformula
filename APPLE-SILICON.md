@@ -20,8 +20,11 @@ Program-output and error-log text views use explicit dark backgrounds and light
 text, including selected text. Their legacy fixed light palette is removed.
 The equation canvas stays white so exported black formulas remain visible.
 The application uses Dark Aqua for its native title bar and menus. The title bar
-matches the content's top background and has no separator. Its appearance is
+uses a full-size content view so the same Qt background paints behind the native
+title and traffic-light controls, without a separate fill or separator. Its appearance is
 reapplied after Cocoa finishes showing, activating or resizing the window.
+The layout reserves the native title-bar inset to keep the editor clear of the
+window controls and retain the original compact content size.
 
 The macOS app icon preserves the original mathematical f on a rounded tile,
 with transparent outer corners and all standard Retina sizes. Its editable source

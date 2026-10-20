@@ -149,8 +149,11 @@ void KLFMainWin::setupMacAppearance()
   resize(400, 360);
   refreshMacAppearance();
 
-  extern void klf_mac_modern_window(QWidget *);
-  klf_mac_modern_window(this);
+  extern int klf_mac_modern_window(QWidget *);
+  const int titlebar = klf_mac_modern_window(this);
+  u->lyt_KLFMainWin->setContentsMargins(6, 6 + titlebar, 6, 6);
+  setMinimumSize(380, 280 + titlebar);
+  resize(400, 360 + titlebar);
   // Cocoa/Qt finishes configuring the title bar when the window is shown.
   // Reapply after that work so its fill stays continuous with the content.
   installEventFilter(this);

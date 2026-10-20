@@ -2554,8 +2554,10 @@ bool KLFMainWin::eventFilter(QObject *obj, QEvent *e)
   if (obj == this && (e->type() == QEvent::Show || e->type() == QEvent::WindowActivate ||
                       e->type() == QEvent::Resize)) {
     QTimer::singleShot(0, this, [this]() {
-      extern void klf_mac_modern_window(QWidget *);
-      klf_mac_modern_window(this);
+      extern int klf_mac_modern_window(QWidget *);
+      const int titlebar = klf_mac_modern_window(this);
+      if (u->lyt_KLFMainWin->contentsMargins().top() != 6 + titlebar)
+        u->lyt_KLFMainWin->setContentsMargins(6, 6 + titlebar, 6, 6);
     });
   }
 #endif
