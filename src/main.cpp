@@ -858,11 +858,10 @@ int main(int argc, char **argv)
 
       klfDbg("klfconfig.UI.useSystemAppFont = " << klfconfig.UI.useSystemAppFont
 	     << " ; klfconfig.UI.applicationFont = " << klfconfig.UI.applicationFont) ;
-      // Migrate the old bundled CMU interface font to the macOS system font.
-      // Explicit user-selected fonts remain available in Preferences.
 #ifdef KLF_WS_MAC
-      if (QFont(klfconfig.UI.applicationFont).family().contains("CMU", Qt::CaseInsensitive))
-        klfconfig.UI.useSystemAppFont = true;
+      // Resolve the native font through Qt instead of naming or emulating it.
+      klfconfig.UI.useSystemAppFont = true;
+      QApplication::setFont(QFontDatabase::systemFont(QFontDatabase::GeneralFont));
 #endif
       if (!klfconfig.UI.useSystemAppFont) {
 	QApplication::setFont(klfconfig.UI.applicationFont);

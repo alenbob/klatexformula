@@ -18,7 +18,7 @@ void textButton(QPushButton *button, const QString& text)
 {
   button->setText(text);
   button->setIcon(QIcon());
-  button->setMinimumHeight(34);
+  button->setMinimumHeight(24);
   button->setMaximumHeight(QWIDGETSIZE_MAX);
   button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 }
@@ -26,23 +26,19 @@ void textButton(QPushButton *button, const QString& text)
 
 void KLFMainWin::setupMacAppearance()
 {
-  setFont(QApplication::font());
-  u->lyt_KLFMainWin->setContentsMargins(20, 16, 20, 20);
-  u->lyt_KLFMainWin->setSpacing(18);
+  const QFont systemFont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
+  setFont(systemFont);
+  u->lyt_KLFMainWin->setContentsMargins(10, 8, 10, 10);
+  u->lyt_KLFMainWin->setSpacing(10);
   u->lyt_frmMain->setContentsMargins(0, 0, 0, 0);
-  u->lyt_frmMain->setSpacing(16);
+  u->lyt_frmMain->setSpacing(8);
   u->btnQuit->hide(); // macOS provides Quit in the application menu and Cmd-Q.
 
   QWidget *header = new QWidget(u->frmMain);
   header->setObjectName("macHeader");
   QHBoxLayout *headerLayout = new QHBoxLayout(header);
   headerLayout->setContentsMargins(0, 0, 0, 0);
-  headerLayout->setSpacing(8);
-  QVBoxLayout *titles = new QVBoxLayout;
-  titles->setSpacing(4);
-  titles->addWidget(heading(tr("KLatexFormula"), "macTitle", header));
-  titles->addWidget(heading(tr("LaTeX equation editor"), "macSubtitle", header));
-  headerLayout->addLayout(titles);
+  headerLayout->setSpacing(6);
   headerLayout->addStretch();
   const QList<QPushButton *> navigation = {u->btnSymbols, u->btnLibrary, u->btnExpand};
   const QStringList names = {tr("Symbols"), tr("Library"), tr("Options")};
@@ -57,8 +53,8 @@ void KLFMainWin::setupMacAppearance()
   QWidget *editorPanel = new QWidget(u->splitMain);
   editorPanel->setObjectName("macEditorPanel");
   QVBoxLayout *editorLayout = new QVBoxLayout(editorPanel);
-  editorLayout->setContentsMargins(18, 16, 18, 14);
-  editorLayout->setSpacing(12);
+  editorLayout->setContentsMargins(10, 8, 10, 8);
+  editorLayout->setSpacing(6);
   QHBoxLayout *editorHeading = new QHBoxLayout;
   editorHeading->addWidget(heading(tr("LaTeX"), "macSectionTitle", editorPanel));
   editorHeading->addStretch();
@@ -66,40 +62,41 @@ void KLFMainWin::setupMacAppearance()
   editorLayout->addLayout(editorHeading);
   u->txtLatex->setParent(editorPanel);
   u->txtLatex->setFrameShape(QFrame::NoFrame);
-  u->txtLatex->setMinimumHeight(130);
+  u->txtLatex->setMinimumHeight(70);
   u->txtLatex->setPlaceholderText(tr("Type an equation, for example E = mc^2"));
-  u->txtLatex->setFont(QFont("Menlo", 15));
+  u->txtLatex->setFont(systemFont);
+  u->txtPreamble->setFont(systemFont);
   editorLayout->addWidget(u->txtLatex);
   u->splitMain->insertWidget(0, editorPanel);
 
   textButton(u->btnClearAll, tr("Clear"));
   textButton(u->btnClearLatex, tr("Clear"));
-  textButton(u->btnEvaluate, tr("Render Equation"));
+  textButton(u->btnEvaluate, tr("Render"));
   u->lytMiddle->removeWidget(u->btnEvaluate);
   u->lytMiddle->addStretch();
   u->lytMiddle->addWidget(u->btnEvaluate);
-  u->lytMiddle->setSpacing(8);
-  u->lytMiddle->setContentsMargins(0, 0, 0, 14);
+  u->lytMiddle->setSpacing(6);
+  u->lytMiddle->setContentsMargins(0, 0, 0, 8);
   u->vlyt_OutputFrame->setSpacing(0);
 
   // Replace the vertical export stack with a single, labeled action bar.
   while (QLayoutItem *item = u->lyt_frmOutput->takeAt(0)) {
     delete item; // Layout items do not own the widgets.
   }
-  u->lyt_frmOutput->setContentsMargins(18, 16, 18, 16);
-  u->lyt_frmOutput->setSpacing(12);
+  u->lyt_frmOutput->setContentsMargins(10, 8, 10, 8);
+  u->lyt_frmOutput->setSpacing(6);
   u->lyt_frmOutput->setColumnStretch(0, 1);
   u->lyt_frmOutput->setColumnStretch(1, 0);
   u->lyt_frmOutput->addWidget(heading(tr("Preview"), "macSectionTitle", u->frmOutput), 0, 0);
-  u->lblOutput->setMinimumSize(360, 140);
+  u->lblOutput->setMinimumSize(300, 80);
   u->lblOutput->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  u->lblOutput->setMargin(12);
+  u->lblOutput->setMargin(6);
   u->lblOutput->setAccessibleName(tr("Rendered equation preview"));
   u->lyt_frmOutput->addWidget(u->lblOutput, 1, 0);
   u->lyt_frmOutput->setRowStretch(1, 1);
 
   QHBoxLayout *exportLayout = new QHBoxLayout;
-  exportLayout->setSpacing(8);
+  exportLayout->setSpacing(6);
   textButton(u->btnDrag, tr("Drag"));
   textButton(u->btnCopy, tr("Copy"));
   textButton(u->btnSave, tr("Save…"));
@@ -114,7 +111,7 @@ void KLFMainWin::setupMacAppearance()
   u->btnSetExportProfile->setIcon(QIcon());
   u->btnSetExportProfile->setText(tr("Export format"));
   u->btnSetExportProfile->setToolButtonStyle(Qt::ToolButtonTextOnly);
-  u->btnSetExportProfile->setMinimumHeight(34);
+  u->btnSetExportProfile->setMinimumHeight(24);
   exportLayout->addWidget(u->btnSetExportProfile);
   u->wForBigPreviewButton->hide();
   u->lyt_frmOutput->addLayout(exportLayout, 2, 0);
@@ -125,8 +122,8 @@ void KLFMainWin::setupMacAppearance()
     u->lyt_KLFMainWin->addWidget(u->frmDetails);
   }
   u->frmDetails->setSideWidgetManager(QLatin1String("ShowHide"));
-  u->frmDetails->setMinimumWidth(340);
-  u->frmDetails->setMaximumWidth(380);
+  u->frmDetails->setMinimumWidth(280);
+  u->frmDetails->setMaximumWidth(320);
   u->lyt_KLFMainWin->setStretch(0, 1);
   u->lyt_KLFMainWin->setStretch(1, 0);
   for (QComboBox *combo : u->frmDetails->findChildren<QComboBox *>()) {
@@ -134,12 +131,12 @@ void KLFMainWin::setupMacAppearance()
     combo->setMinimumContentsLength(10);
   }
   u->splitMain->setChildrenCollapsible(false);
-  u->splitMain->setHandleWidth(12);
+  u->splitMain->setHandleWidth(6);
   u->splitMain->setStretchFactor(0, 1);
   u->splitMain->setStretchFactor(1, 1);
-  u->splitMain->setSizes(QList<int>() << 210 << 300);
-  setMinimumSize(700, 590);
-  resize(800, 680);
+  u->splitMain->setSizes(QList<int>() << 160 << 210);
+  setMinimumSize(560, 390);
+  resize(620, 460);
   refreshMacAppearance();
 
   extern void klf_mac_modern_window(QWidget *);
@@ -193,11 +190,9 @@ void KLFMainWin::refreshMacAppearance()
     QMainWindow#KLFMainWin { background: @background; color: @text; }
     KLFLatexSymbols, QWidget#frmSymbolList { background: @background; color: @text; }
     QLabel { color: @text; }
-    QLabel#macTitle { font-size: 21px; font-weight: 600; }
-    QLabel#macSubtitle, QLabel#macHint { color: @muted; font-size: 12px; }
-    QLabel#macSectionTitle { font-size: 13px; font-weight: 600; }
+    QLabel#macHint { color: @muted; }
     QWidget#macEditorPanel, QFrame#frmOutput {
-      background: @panel; border: 1px solid @softBorder; border-radius: 16px;
+      background: @panel; border: 1px solid @softBorder; border-radius: 5px;
     }
     QTextEdit#txtLatex {
       background: @panel; color: @text; border: none; padding: 2px;
@@ -206,49 +201,49 @@ void KLFMainWin::refreshMacAppearance()
     QTextEdit#txtLatex:focus { border-bottom: 2px solid #377fdd; }
     QLabel#lblOutput {
       background: #ffffff; color: #25334a; border: 1px solid @softBorder;
-      border-radius: 10px;
+      border-radius: 3px;
     }
     QLabel#lblOutput[realTimeLatexError="true"] {
       background: #fff1f0; color: #9b1c13; border: 1px solid #b42318;
     }
     QPushButton, QToolButton {
       background: @button; color: @text; border: 1px solid @border;
-      border-radius: 10px; padding: 0px 14px; min-height: 32px;
-      font-size: 13px; font-weight: 500; outline: none;
+      border-radius: 4px; padding: 0px 8px; min-height: 22px;
+      outline: none;
     }
     QPushButton:hover, QToolButton:hover { background: @hover; }
     QPushButton:pressed, QToolButton:pressed { background: @pressed; }
     QPushButton:checked { background: @pressed; border: 1px solid #377fdd; }
-    QPushButton:focus, QToolButton:focus { border: 2px solid #377fdd; padding: 0px 13px; }
+    QPushButton:focus, QToolButton:focus { border: 2px solid #377fdd; padding: 0px 7px; }
     QPushButton#btnEvaluate {
       background: #075dc8; color: white; border: 1px solid #0751ae;
-      border-radius: 17px; padding: 0px 22px; font-weight: 600; min-height: 36px;
+      border-radius: 4px; padding: 0px 12px; min-height: 22px;
     }
     QPushButton#btnEvaluate:hover { background: #064fae; }
     QPushButton#btnEvaluate:pressed { background: #04418e; }
-    QPushButton#btnEvaluate:focus { border: 2px solid @text; padding: 0px 21px; }
+    QPushButton#btnEvaluate:focus { border: 2px solid @text; padding: 0px 11px; }
     QPushButton:disabled, QToolButton:disabled, QPushButton#btnEvaluate:disabled {
       color: @disabled; background: @disabledBackground; border: 1px solid @softBorder;
     }
     KLFPixmapButton {
       background: #ffffff; color: #192332; border: 1px solid #919dad;
-      border-radius: 8px; padding: 4px; min-height: 30px;
+      border-radius: 4px; padding: 2px; min-height: 24px;
     }
     KLFPixmapButton:hover { background: #e5edfa; border: 1px solid #075dc8; }
     KLFPixmapButton:pressed { background: #c6dcff; }
     QTabWidget::pane {
-      background: @panel; border: 1px solid @softBorder; border-radius: 12px;
+      background: @panel; border: 1px solid @softBorder; border-radius: 4px;
       top: -1px;
     }
     QTabBar::tab {
       background: @button; color: @text; border: 1px solid @border;
-      border-radius: 8px; padding: 8px 10px; margin: 0px 3px 7px 0px;
+      border-radius: 4px; padding: 4px 6px; margin: 0px 2px 4px 0px;
     }
     QTabBar::tab:selected { background: @pressed; border: 1px solid #377fdd; }
     QTabBar::tab:hover { background: @hover; }
     QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit#txtPreamble {
       background: @panel; color: @text; border: 1px solid @border;
-      border-radius: 7px; padding: 5px 8px; min-height: 22px;
+      border-radius: 3px; padding: 2px 5px; min-height: 20px;
       selection-background-color: #075dc8; selection-color: white;
     }
     QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QTextEdit#txtPreamble:focus {
@@ -263,8 +258,8 @@ void KLFMainWin::refreshMacAppearance()
       subcontrol-position: right center; subcontrol-origin: padding;
     }
     QGroupBox {
-      color: @text; border: 1px solid @softBorder; border-radius: 9px;
-      margin-top: 10px; padding-top: 12px;
+      color: @text; border: 1px solid @softBorder; border-radius: 4px;
+      margin-top: 8px; padding-top: 8px;
     }
     QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0px 4px; }
     QSplitter::handle { background: transparent; }

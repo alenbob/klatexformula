@@ -198,7 +198,7 @@ KLFMainWin::KLFMainWin()
   klfDbg("setting up relative font...") ;
   KLFRelativeFont *rf = new KLFRelativeFont(this, u->frmDetails);
 #ifdef KLF_WS_MAC
-  rf->setRelPointSize(-2);
+  rf->setRelPointSize(0);
   rf->setThorough(true);
 #else
   rf->setRelPointSize(-1);
