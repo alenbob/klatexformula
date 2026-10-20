@@ -5,12 +5,8 @@
 # ######################################## #
 
 
-# Rely on CMake utilities for fixing up bundle dependencies
-#
-if(KLF_MACOSX_BUNDLES)
-  include(BundleUtilities)
-#include(KLFMacBundle)
-endif(KLF_MACOSX_BUNDLES)
+# BundleUtilities is loaded by the post-build fixup script, not at configure
+# time (which is disallowed by CMake policy CMP0080).
 
 
 # Set up -DKLF_WS_<window-system-name> -DKLF_WS="..." to indicate window system in use
@@ -154,6 +150,7 @@ if(KLF_BUILD_GUI)
 
   set(klatexformula_post_build_commands )
   set(klatexformula_bundle_include_libs )
+  set(klatexformula_bundle_include_dirs ${KLF_BUNDLE_LIBRARY_DIRS})
 
   # Adjustments for certain platforms and options -- special features
   if(KLF_WS STREQUAL "win")
