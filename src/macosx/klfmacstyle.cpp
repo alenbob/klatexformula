@@ -219,7 +219,13 @@ void KLFMainWin::refreshMacAppearance()
         stop:0 #292929, stop:0.3 #292929, stop:1 #202020); color: @text;
     }
     KLFLatexSymbols, QWidget#frmSymbolList { background: @background; color: @text; }
+    QDialog#KLFProgErr { background: @background; color: @text; }
     QLabel { color: @text; }
+    QTextEdit, QPlainTextEdit {
+      background: #333333; color: @text; border: none;
+      border-radius: 8px; padding: 6px;
+      selection-background-color: @selection; selection-color: @text;
+    }
     QWidget#macEditorPanel, QFrame#frmOutput {
       background: transparent; border: none;
     }

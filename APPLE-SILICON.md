@@ -16,6 +16,8 @@ the window and editor background. Rounded editor, preview and Options surfaces
 use contrasting fills without visible outlines. Buttons, inputs, hover, keyboard
 focus and disabled states are also distinguished by background tone;
 the selected Options tab uses dark text on a light gray fill.
+Program-output and error-log text views use explicit dark backgrounds and light
+text, including selected text. Their legacy fixed light palette is removed.
 The equation canvas stays white so exported black formulas remain visible.
 The application uses Dark Aqua for its native title bar and menus. The title bar
 matches the content's top background and has no separator. Its appearance is
