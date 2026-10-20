@@ -1,8 +1,21 @@
 # Apple Silicon development build
 
 This branch builds KLatexFormula natively for ARM64 Macs, without Rosetta.
-It retains Qt 5.15 and the existing GUI. It is a development port, not an
+It uses Qt 5.15 with an updated macOS presentation. It is a development port, not an
 official KLatexFormula release.
+
+## macOS presentation
+
+The main window uses a macOS 26-inspired layout with system typography,
+rounded editor and preview panels, labeled navigation, a blue primary render
+action, and a horizontal export bar. Button text, borders, hover, keyboard
+focus and disabled states use explicit contrasting colors. The interface
+follows the system light/dark palette, including readable syntax highlighting;
+the equation canvas stays white so exported black formulas remain visible.
+
+Options open alongside the editor instead of using the deprecated NSDrawer.
+Saved drawer settings migrate to the inline layout. Quit remains available
+in the native application menu and with Cmd-Q.
 
 ## Build
 

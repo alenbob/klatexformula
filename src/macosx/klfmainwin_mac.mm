@@ -31,6 +31,17 @@
 
 #include <klfmainwin.h>
 
+void klf_mac_modern_window(QWidget *widget)
+{
+  NSView *view = reinterpret_cast<NSView *>(widget->winId());
+  NSWindow *window = [view window];
+  window.titlebarAppearsTransparent = YES;
+  window.backgroundColor = [NSColor windowBackgroundColor];
+  if (@available(macOS 11.0, *)) {
+    window.toolbarStyle = NSWindowToolbarStyleUnified;
+  }
+}
+
 
 #ifdef QT_MAC_USE_COCOA
 

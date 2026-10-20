@@ -173,6 +173,7 @@ if(KLF_BUILD_GUI)
   if(KLF_WS STREQUAL "mac")
     target_sources(klatexformula PRIVATE
       macosx/klfmacclipboard.cpp
+      macosx/klfmacstyle.cpp
       macosx/klfmainwin_mac.mm
       macosx/klfcmdifacedispatch_mac.mm
       )

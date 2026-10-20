@@ -205,6 +205,10 @@ KLFMainWin::KLFMainWin()
 #endif
 
   //  u->frmDetails->setSideWidgetManager(klfconfig.UI.detailsSideWidgetType);
+#ifdef KLF_WS_MAC
+  if (klfconfig.UI.detailsSideWidgetType == QLatin1String("Drawer"))
+    klfconfig.UI.detailsSideWidgetType = QLatin1String("ShowHide");
+#endif
   klfconfig.UI.detailsSideWidgetType.connectQObjectProperty(u->frmDetails, "sideWidgetManagerType");
   u->frmDetails->showSideWidget(false);
 
@@ -284,7 +288,12 @@ KLFMainWin::KLFMainWin()
   connect(u->btnEvaluate, SIGNAL(clicked()), this, SLOT(slotEvaluate()));
   connect(u->btnSymbols, SIGNAL(toggled(bool)), this, SLOT(slotSymbols(bool)));
   connect(u->btnLibrary, SIGNAL(toggled(bool)), this, SLOT(slotLibrary(bool)));
+#ifdef KLF_WS_MAC
+  u->btnExpand->setCheckable(true);
+  connect(u->btnExpand, SIGNAL(toggled(bool)), this, SLOT(slotExpand(bool)));
+#else
   connect(u->btnExpand, SIGNAL(clicked()), this, SLOT(slotExpandOrShrink()));
+#endif
   connect(u->btnCopy, SIGNAL(clicked()), this, SLOT(slotCopy()));
   connect(u->btnDrag, SIGNAL(released()), this, SLOT(slotDrag()));
   connect(u->btnSave, SIGNAL(clicked()), this, SLOT(slotSave()));
@@ -573,7 +582,11 @@ KLFMainWin::KLFMainWin()
   registerDataOpener(new KLFTexDataOpener(this));
 
   // and present a cool window size
+#ifdef KLF_WS_MAC
+  setupMacAppearance();
+#else
   adjustSize();
+#endif
 }
 
 void KLFMainWin::retranslateUi(bool alsoBaseUi)
@@ -2592,6 +2605,11 @@ bool KLFMainWin::eventFilter(QObject *obj, QEvent *e)
 
   // ----
   if ( obj == QApplication::instance() ) {
+#ifdef KLF_WS_MAC
+    if (e->type() == QEvent::ApplicationPaletteChange) {
+      refreshMacAppearance();
+    }
+#endif
     klfDbg("Application event: type="<<e->type()) ;
     if ( e->type() == QEvent::Close && ! d->qapp_quit_called ) {
       // intercept close-event, which means that qApp->quit() was called directly
@@ -4134,6 +4152,12 @@ void KLFMainWinPrivate::slotLoadStyleAct()
 
 void KLFMainWinPrivate::slotDetailsSideWidgetShown(bool shown)
 {
+#ifdef KLF_WS_MAC
+  K->u->btnExpand->setIcon(QIcon());
+  K->u->btnExpand->setCheckable(true);
+  K->u->btnExpand->setChecked(shown);
+  return;
+#endif
   if (K->u->frmDetails->sideWidgetManagerType() == QLatin1String("ShowHide")) {
     if (shown)
       K->u->btnExpand->setIcon(QIcon(":/pics/switchshrinked.svg"));
