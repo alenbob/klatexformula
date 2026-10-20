@@ -191,6 +191,7 @@ void KLFMainWin::refreshMacAppearance()
   }
   QString css = QString::fromLatin1(R"CSS(
     QMainWindow#KLFMainWin { background: @background; color: @text; }
+    KLFLatexSymbols, QWidget#frmSymbolList { background: @background; color: @text; }
     QLabel { color: @text; }
     QLabel#macTitle { font-size: 21px; font-weight: 600; }
     QLabel#macSubtitle, QLabel#macHint { color: @muted; font-size: 12px; }
@@ -229,6 +230,12 @@ void KLFMainWin::refreshMacAppearance()
     QPushButton:disabled, QToolButton:disabled, QPushButton#btnEvaluate:disabled {
       color: @disabled; background: @disabledBackground; border: 1px solid @softBorder;
     }
+    KLFPixmapButton {
+      background: #ffffff; color: #192332; border: 1px solid #919dad;
+      border-radius: 8px; padding: 4px; min-height: 30px;
+    }
+    KLFPixmapButton:hover { background: #e5edfa; border: 1px solid #075dc8; }
+    KLFPixmapButton:pressed { background: #c6dcff; }
     QTabWidget::pane {
       background: @panel; border: 1px solid @softBorder; border-radius: 12px;
       top: -1px;
@@ -271,5 +278,8 @@ void KLFMainWin::refreshMacAppearance()
     {"@disabledBackground", disabledBackground}, {"@disabled", disabled}
   };
   for (const auto& token : tokens) css.replace(token.first, token.second);
-  setStyleSheet(css);
+  // Auxiliary windows are independent top-level widgets on macOS. Apply the
+  // same controls there, including white tiles for black symbol thumbnails.
+  if (qApp->styleSheet() != css)
+    qApp->setStyleSheet(css);
 }

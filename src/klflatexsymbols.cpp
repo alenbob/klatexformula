@@ -709,6 +709,11 @@ void KLFLatexSymbolsView::highlightSearchMatches(int currentMatch, const QString
     "KLFPixmapButton { background-color: rgb(180,180,255); }",
     "KLFPixmapButton { background-color: rgb(0,0,255); }"
   };
+#ifdef KLF_WS_MAC
+  // Symbol previews contain black pixels; keep search highlights light.
+  stylesheets[1] = "KLFPixmapButton { background-color: #e5edfa; border: 2px solid #6694dc; }";
+  stylesheets[2] = "KLFPixmapButton { background-color: #c6dcff; border: 2px solid #075dc8; }";
+#endif
 
   if (currentMatch == -1) {
     // abort search
