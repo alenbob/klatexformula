@@ -6,14 +6,22 @@ official KLatexFormula release.
 
 ## macOS presentation
 
-The main window uses the native system font and a neutral grayscale palette,
+The main window uses the native system font and a dark neutral grayscale palette,
 with one action row between the editor and preview and a compact export bar.
 The default window is 400 × 360 logical pixels, matching the installed
 original's approximate width. It uses 24-pixel controls, minimal margins,
-and no extra headings or card frames. Button text, borders, hover, keyboard
-focus and disabled states use explicit contrasting colors. The interface
-follows the system light/dark palette, including readable syntax highlighting;
-the equation canvas stays white so exported black formulas remain visible.
+and no extra headings or card frames. The original hand-drawn button icons retain
+their paths, with light ink for dark controls. Subtle grayscale gradients soften
+the window and editor background. The editor and preview have rounded borders.
+Button text, borders, hover, keyboard focus and disabled states use explicit
+contrasting colors; the selected Options tab uses dark text on a light gray fill.
+The equation canvas stays white so exported black formulas remain visible.
+The application uses Dark Aqua for its native title bar and menus.
+
+The macOS app icon preserves the original mathematical f on a rounded tile,
+with transparent outer corners and all standard Retina sizes. Its editable source
+is `src/macosx/app-icon.svg`; regenerate the checked-in ICNS with
+`bash scripts/generate-macos-icon.sh` on macOS with Qt 5 installed.
 
 Options open alongside the editor instead of using the deprecated NSDrawer.
 Saved drawer settings migrate to the inline layout. Quit remains available

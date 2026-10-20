@@ -144,10 +144,12 @@ KLFMainWin::KLFMainWin()
   for (k = 0; k < d->pLatexFontDefs.size(); ++k) {
     u->cbxLatexFont->addItem(d->pLatexFontDefs[k].title, QVariant(d->pLatexFontDefs[k].identifier));
   }
-  // no idea why this seems to be needed to get text on combo box to display:
+  // Legacy non-macOS styles need this; macOS uses the shared dark palette.
+#ifndef KLF_WS_MAC
   u->cbxLatexFont->setPalette(QPalette(Qt::white));
   u->cbxUserScript->setPalette(QPalette(Qt::white));
   u->cbxMarginsUnit->setPalette(QPalette(Qt::white));
+#endif
 
 
   connect(u->txtLatex->syntaxHighlighter(), SIGNAL(newSymbolTyped(const QString&)),
@@ -4153,7 +4155,9 @@ void KLFMainWinPrivate::slotLoadStyleAct()
 void KLFMainWinPrivate::slotDetailsSideWidgetShown(bool shown)
 {
 #ifdef KLF_WS_MAC
-  K->u->btnExpand->setIcon(QIcon());
+  extern QIcon klf_mac_button_icon(const QString&);
+  K->u->btnExpand->setIcon(klf_mac_button_icon(shown ? ":/pics/switchshrinked.svg"
+                                                                 : ":/pics/switchexpanded.svg"));
   K->u->btnExpand->setCheckable(true);
   K->u->btnExpand->setChecked(shown);
   return;

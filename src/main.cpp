@@ -547,7 +547,11 @@ int main(int argc, char **argv)
     // Create the application
     KLFGuiApplication app(qt_argc, qt_argv);
 
+#ifdef KLF_WS_MAC
+    app.setWindowIcon(QIcon(":/macosx/app-icon.svg"));
+#else
     app.setWindowIcon(QIcon(":/pics/klatexformula.svg"));
+#endif
 
 
 

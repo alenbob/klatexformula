@@ -198,7 +198,7 @@ if(KLF_BUILD_GUI)
     target_sources(klatexformula PRIVATE
       # more stuff we may want to import/copy privately in the App bundle
       macosx/qt.conf
-      macosx/klatexformula.icns
+      macosx/klatexformula-macos.icns
       ${KLF_INCLUDE_FONTS}
       klatexformula-16.png
       klatexformula-32.png
@@ -216,7 +216,7 @@ if(KLF_BUILD_GUI)
     set_target_properties(klatexformula PROPERTIES
       MACOSX_BUNDLE                      true
       OUTPUT_NAME                        klatexformula
-      MACOSX_BUNDLE_ICON_FILE            klatexformula.icns
+      MACOSX_BUNDLE_ICON_FILE            klatexformula-macos.icns
       MACOSX_BUNDLE_INFO_PLIST           "${CMAKE_CURRENT_SOURCE_DIR}/macosx/Info.plist.in"
       MACOSX_BUNDLE_INFO_STRING          "KLatexFormula version ${KLF_VERSION}"
       MACOSX_BUNDLE_GUI_IDENTIFIER       "org.klatexformula.klatexformula"
@@ -233,7 +233,7 @@ if(KLF_BUILD_GUI)
       klatexformula-256.png
       klatexformula-512.png
       klatexformula-1024.png
-      macosx/klatexformula.icns
+      macosx/klatexformula-macos.icns
       PROPERTIES MACOSX_PACKAGE_LOCATION "Resources"
       )
     if(KLF_INCLUDE_FONTS)

@@ -35,8 +35,10 @@ void klf_mac_modern_window(QWidget *widget)
 {
   NSView *view = reinterpret_cast<NSView *>(widget->winId());
   NSWindow *window = [view window];
+  [NSApplication sharedApplication].appearance = [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua];
+  window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua];
   window.titlebarAppearsTransparent = YES;
-  window.backgroundColor = [NSColor windowBackgroundColor];
+  window.backgroundColor = [NSColor colorWithWhite:0.14 alpha:1.0];
   if (@available(macOS 11.0, *)) {
     window.toolbarStyle = NSWindowToolbarStyleUnified;
   }
