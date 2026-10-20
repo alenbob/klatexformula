@@ -6,10 +6,11 @@ official KLatexFormula release.
 
 ## macOS presentation
 
-The main window uses a compact macOS layout with the native system font,
-simple buttons, labeled navigation, a blue primary render action, and a
-horizontal export bar. The default window is 620 × 460 logical pixels, with
-24-pixel controls and restrained spacing. Button text, borders, hover, keyboard
+The main window uses the native system font and a neutral grayscale palette,
+with one action row between the editor and preview and a compact export bar.
+The default window is 400 × 360 logical pixels, matching the installed
+original's approximate width. It uses 24-pixel controls, minimal margins,
+and no extra headings or card frames. Button text, borders, hover, keyboard
 focus and disabled states use explicit contrasting colors. The interface
 follows the system light/dark palette, including readable syntax highlighting;
 the equation canvas stays white so exported black formulas remain visible.

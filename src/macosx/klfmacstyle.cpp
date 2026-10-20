@@ -7,13 +7,6 @@
 #include "klfmainwin.h"
 
 namespace {
-QLabel *heading(const QString& text, const char *name, QWidget *parent)
-{
-  QLabel *label = new QLabel(text, parent);
-  label->setObjectName(QLatin1String(name));
-  return label;
-}
-
 void textButton(QPushButton *button, const QString& text)
 {
   button->setText(text);
@@ -21,6 +14,7 @@ void textButton(QPushButton *button, const QString& text)
   button->setMinimumHeight(24);
   button->setMaximumHeight(QWIDGETSIZE_MAX);
   button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+  button->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
 }
 
@@ -28,42 +22,28 @@ void KLFMainWin::setupMacAppearance()
 {
   const QFont systemFont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
   setFont(systemFont);
-  u->lyt_KLFMainWin->setContentsMargins(10, 8, 10, 10);
-  u->lyt_KLFMainWin->setSpacing(10);
+  u->lyt_KLFMainWin->setContentsMargins(6, 6, 6, 6);
+  u->lyt_KLFMainWin->setSpacing(6);
   u->lyt_frmMain->setContentsMargins(0, 0, 0, 0);
-  u->lyt_frmMain->setSpacing(8);
+  u->lyt_frmMain->setSpacing(4);
   u->btnQuit->hide(); // macOS provides Quit in the application menu and Cmd-Q.
 
-  QWidget *header = new QWidget(u->frmMain);
-  header->setObjectName("macHeader");
-  QHBoxLayout *headerLayout = new QHBoxLayout(header);
-  headerLayout->setContentsMargins(0, 0, 0, 0);
-  headerLayout->setSpacing(6);
-  headerLayout->addStretch();
   const QList<QPushButton *> navigation = {u->btnSymbols, u->btnLibrary, u->btnExpand};
   const QStringList names = {tr("Symbols"), tr("Library"), tr("Options")};
   for (int index = 0; index < navigation.size(); ++index) {
-    u->lytMiddle->removeWidget(navigation[index]);
     textButton(navigation[index], names[index]);
-    headerLayout->addWidget(navigation[index]);
   }
-  u->lyt_frmMain->insertWidget(0, header);
 
   // Wrap the existing editor, preserving its shortcuts, highlighting and drops.
   QWidget *editorPanel = new QWidget(u->splitMain);
   editorPanel->setObjectName("macEditorPanel");
   QVBoxLayout *editorLayout = new QVBoxLayout(editorPanel);
-  editorLayout->setContentsMargins(10, 8, 10, 8);
-  editorLayout->setSpacing(6);
-  QHBoxLayout *editorHeading = new QHBoxLayout;
-  editorHeading->addWidget(heading(tr("LaTeX"), "macSectionTitle", editorPanel));
-  editorHeading->addStretch();
-  editorHeading->addWidget(heading(tr("Shift + Return to render"), "macHint", editorPanel));
-  editorLayout->addLayout(editorHeading);
+  editorLayout->setContentsMargins(0, 0, 0, 0);
+  editorLayout->setSpacing(0);
   u->txtLatex->setParent(editorPanel);
   u->txtLatex->setFrameShape(QFrame::NoFrame);
-  u->txtLatex->setMinimumHeight(70);
-  u->txtLatex->setPlaceholderText(tr("Type an equation, for example E = mc^2"));
+  u->txtLatex->setMinimumHeight(64);
+  u->txtLatex->setPlaceholderText(tr("Enter LaTeX"));
   u->txtLatex->setFont(systemFont);
   u->txtPreamble->setFont(systemFont);
   editorLayout->addWidget(u->txtLatex);
@@ -72,31 +52,28 @@ void KLFMainWin::setupMacAppearance()
   textButton(u->btnClearAll, tr("Clear"));
   textButton(u->btnClearLatex, tr("Clear"));
   textButton(u->btnEvaluate, tr("Render"));
-  u->lytMiddle->removeWidget(u->btnEvaluate);
-  u->lytMiddle->addStretch();
-  u->lytMiddle->addWidget(u->btnEvaluate);
-  u->lytMiddle->setSpacing(6);
-  u->lytMiddle->setContentsMargins(0, 0, 0, 8);
+  u->btnEvaluate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  u->lytMiddle->setSpacing(4);
+  u->lytMiddle->setContentsMargins(0, 0, 0, 4);
   u->vlyt_OutputFrame->setSpacing(0);
 
   // Replace the vertical export stack with a single, labeled action bar.
   while (QLayoutItem *item = u->lyt_frmOutput->takeAt(0)) {
     delete item; // Layout items do not own the widgets.
   }
-  u->lyt_frmOutput->setContentsMargins(10, 8, 10, 8);
-  u->lyt_frmOutput->setSpacing(6);
+  u->lyt_frmOutput->setContentsMargins(0, 0, 0, 0);
+  u->lyt_frmOutput->setSpacing(4);
   u->lyt_frmOutput->setColumnStretch(0, 1);
   u->lyt_frmOutput->setColumnStretch(1, 0);
-  u->lyt_frmOutput->addWidget(heading(tr("Preview"), "macSectionTitle", u->frmOutput), 0, 0);
-  u->lblOutput->setMinimumSize(300, 80);
+  u->lblOutput->setMinimumSize(260, 80);
   u->lblOutput->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  u->lblOutput->setMargin(6);
+  u->lblOutput->setMargin(4);
   u->lblOutput->setAccessibleName(tr("Rendered equation preview"));
-  u->lyt_frmOutput->addWidget(u->lblOutput, 1, 0);
-  u->lyt_frmOutput->setRowStretch(1, 1);
+  u->lyt_frmOutput->addWidget(u->lblOutput, 0, 0);
+  u->lyt_frmOutput->setRowStretch(0, 1);
 
   QHBoxLayout *exportLayout = new QHBoxLayout;
-  exportLayout->setSpacing(6);
+  exportLayout->setSpacing(4);
   textButton(u->btnDrag, tr("Drag"));
   textButton(u->btnCopy, tr("Copy"));
   textButton(u->btnSave, tr("Save…"));
@@ -109,12 +86,12 @@ void KLFMainWin::setupMacAppearance()
   textButton(u->btnShowBigPreview, tr("Zoom"));
   exportLayout->addWidget(u->btnShowBigPreview);
   u->btnSetExportProfile->setIcon(QIcon());
-  u->btnSetExportProfile->setText(tr("Export format"));
+  u->btnSetExportProfile->setText(tr("Format"));
   u->btnSetExportProfile->setToolButtonStyle(Qt::ToolButtonTextOnly);
   u->btnSetExportProfile->setMinimumHeight(24);
   exportLayout->addWidget(u->btnSetExportProfile);
   u->wForBigPreviewButton->hide();
-  u->lyt_frmOutput->addLayout(exportLayout, 2, 0);
+  u->lyt_frmOutput->addLayout(exportLayout, 1, 0);
 
   // NSDrawer predates modern macOS; keep options in the resizable main window.
   if (u->frmDetails->parentWidget() != u->wCentralWidget) {
@@ -131,12 +108,12 @@ void KLFMainWin::setupMacAppearance()
     combo->setMinimumContentsLength(10);
   }
   u->splitMain->setChildrenCollapsible(false);
-  u->splitMain->setHandleWidth(6);
+  u->splitMain->setHandleWidth(4);
   u->splitMain->setStretchFactor(0, 1);
   u->splitMain->setStretchFactor(1, 1);
-  u->splitMain->setSizes(QList<int>() << 160 << 210);
-  setMinimumSize(560, 390);
-  resize(620, 460);
+  u->splitMain->setSizes(QList<int>() << 140 << 200);
+  setMinimumSize(380, 280);
+  resize(400, 360);
   refreshMacAppearance();
 
   extern void klf_mac_modern_window(QWidget *);
@@ -146,17 +123,26 @@ void KLFMainWin::setupMacAppearance()
 void KLFMainWin::refreshMacAppearance()
 {
   const bool dark = QApplication::palette().color(QPalette::Window).lightness() < 128;
-  const QString background = dark ? "#202329" : "#edf0f5";
-  const QString panel = dark ? "#2c3038" : "#ffffff";
-  const QString text = dark ? "#f4f6fb" : "#192332";
-  const QString muted = dark ? "#b5bfce" : "#536176";
-  const QString border = dark ? "#788393" : "#919dad";
-  const QString softBorder = dark ? "#505967" : "#ccd3dd";
-  const QString button = dark ? "#3b424e" : "#ffffff";
-  const QString hover = dark ? "#4a5565" : "#e5edf9";
-  const QString pressed = dark ? "#58687d" : "#d2e0f5";
-  const QString disabled = dark ? "#a6afbd" : "#626e7f";
-  const QString disabledBackground = dark ? "#303640" : "#e5e9ef";
+  const QString background = dark ? "#242424" : "#f1f1f1";
+  const QString panel = dark ? "#2d2d2d" : "#ffffff";
+  const QString text = dark ? "#eeeeee" : "#202020";
+  const QString muted = dark ? "#b5b5b5" : "#606060";
+  const QString border = dark ? "#787878" : "#999999";
+  const QString softBorder = dark ? "#505050" : "#c8c8c8";
+  const QString button = dark ? "#3c3c3c" : "#fafafa";
+  const QString hover = dark ? "#494949" : "#e8e8e8";
+  const QString pressed = dark ? "#585858" : "#d7d7d7";
+  const QString disabled = dark ? "#a6a6a6" : "#6a6a6a";
+  const QString disabledBackground = dark ? "#303030" : "#e5e5e5";
+  const QString focus = dark ? "#cccccc" : "#555555";
+  const QString selection = dark ? "#686868" : "#d0d0d0";
+  QPalette neutralPalette = QApplication::palette();
+  neutralPalette.setColor(QPalette::Highlight, QColor(selection));
+  neutralPalette.setColor(QPalette::HighlightedText, QColor(text));
+  neutralPalette.setColor(QPalette::Link, QColor(text));
+  neutralPalette.setColor(QPalette::LinkVisited, QColor(muted));
+  if (qApp->palette() != neutralPalette)
+    qApp->setPalette(neutralPalette);
   // Legacy syntax colors were chosen for a white editor. Keep a copy of the
   // user's formats and adapt their foregrounds when the system uses dark mode.
   for (KLFLatexEdit *editor : {u->txtLatex, u->txtPreamble}) {
@@ -169,18 +155,12 @@ void KLFMainWin::refreshMacAppearance()
       if (!highlighter->property(saved).isValid())
         highlighter->setProperty(saved, highlighter->property(name));
       QTextCharFormat value = highlighter->property(saved).value<QTextFormat>().toCharFormat();
-      if (dark) {
-        if (format == "fmtKeyword") value.setForeground(QColor("#9fc5ff"));
-        if (format == "fmtComment") value.setForeground(QColor("#ffb8b0"));
-        if (format == "fmtLonelyParen") value.setForeground(QColor("#f6b0ff"));
-        if (format == "fmtParenMatch") {
-          value.setForeground(QColor("#f4f6fb"));
-          value.setBackground(QColor("#365745"));
-        }
-        if (format == "fmtParenMismatch") {
-          value.setForeground(QColor("#ffffff"));
-          value.setBackground(QColor("#853e62"));
-        }
+      value.setForeground(QColor(format == "fmtComment" ? muted : text));
+      if (format == "fmtParenMatch" || format == "fmtParenMismatch")
+        value.setBackground(QColor(pressed));
+      if (format == "fmtParenMismatch" || format == "fmtLonelyParen") {
+        value.setFontUnderline(true);
+        value.setUnderlineColor(QColor(text));
       }
       highlighter->setProperty(name, QVariant::fromValue(QTextFormat(value)));
     }
@@ -190,47 +170,40 @@ void KLFMainWin::refreshMacAppearance()
     QMainWindow#KLFMainWin { background: @background; color: @text; }
     KLFLatexSymbols, QWidget#frmSymbolList { background: @background; color: @text; }
     QLabel { color: @text; }
-    QLabel#macHint { color: @muted; }
     QWidget#macEditorPanel, QFrame#frmOutput {
-      background: @panel; border: 1px solid @softBorder; border-radius: 5px;
+      background: transparent; border: none;
     }
     QTextEdit#txtLatex {
-      background: @panel; color: @text; border: none; padding: 2px;
-      selection-background-color: #075dc8; selection-color: white;
+      background: @panel; color: @text; border: 1px solid @softBorder;
+      border-radius: 3px; padding: 4px;
+      selection-background-color: @selection; selection-color: @text;
     }
-    QTextEdit#txtLatex:focus { border-bottom: 2px solid #377fdd; }
+    QTextEdit#txtLatex:focus { border: 1px solid @focus; }
     QLabel#lblOutput {
-      background: #ffffff; color: #25334a; border: 1px solid @softBorder;
+      background: #ffffff; color: #202020; border: 1px solid @softBorder;
       border-radius: 3px;
     }
     QLabel#lblOutput[realTimeLatexError="true"] {
-      background: #fff1f0; color: #9b1c13; border: 1px solid #b42318;
+      background: @hover; color: @text; border: 2px solid @focus;
     }
     QPushButton, QToolButton {
       background: @button; color: @text; border: 1px solid @border;
-      border-radius: 4px; padding: 0px 8px; min-height: 22px;
+      border-radius: 3px; padding: 0px 6px; min-height: 22px;
       outline: none;
     }
     QPushButton:hover, QToolButton:hover { background: @hover; }
     QPushButton:pressed, QToolButton:pressed { background: @pressed; }
-    QPushButton:checked { background: @pressed; border: 1px solid #377fdd; }
-    QPushButton:focus, QToolButton:focus { border: 2px solid #377fdd; padding: 0px 7px; }
-    QPushButton#btnEvaluate {
-      background: #075dc8; color: white; border: 1px solid #0751ae;
-      border-radius: 4px; padding: 0px 12px; min-height: 22px;
-    }
-    QPushButton#btnEvaluate:hover { background: #064fae; }
-    QPushButton#btnEvaluate:pressed { background: #04418e; }
-    QPushButton#btnEvaluate:focus { border: 2px solid @text; padding: 0px 11px; }
+    QPushButton:checked { background: @pressed; border: 1px solid @focus; }
+    QPushButton:focus, QToolButton:focus { border: 2px solid @focus; padding: 0px 5px; }
     QPushButton:disabled, QToolButton:disabled, QPushButton#btnEvaluate:disabled {
       color: @disabled; background: @disabledBackground; border: 1px solid @softBorder;
     }
     KLFPixmapButton {
-      background: #ffffff; color: #192332; border: 1px solid #919dad;
+      background: #ffffff; color: #202020; border: 1px solid #999999;
       border-radius: 4px; padding: 2px; min-height: 24px;
     }
-    KLFPixmapButton:hover { background: #e5edfa; border: 1px solid #075dc8; }
-    KLFPixmapButton:pressed { background: #c6dcff; }
+    KLFPixmapButton:hover { background: #eeeeee; border: 1px solid #555555; }
+    KLFPixmapButton:pressed { background: #d5d5d5; }
     QTabWidget::pane {
       background: @panel; border: 1px solid @softBorder; border-radius: 4px;
       top: -1px;
@@ -239,20 +212,21 @@ void KLFMainWin::refreshMacAppearance()
       background: @button; color: @text; border: 1px solid @border;
       border-radius: 4px; padding: 4px 6px; margin: 0px 2px 4px 0px;
     }
-    QTabBar::tab:selected { background: @pressed; border: 1px solid #377fdd; }
+    QTabBar::tab:selected { background: @pressed; border: 1px solid @focus; }
     QTabBar::tab:hover { background: @hover; }
     QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit#txtPreamble {
       background: @panel; color: @text; border: 1px solid @border;
       border-radius: 3px; padding: 2px 5px; min-height: 20px;
-      selection-background-color: #075dc8; selection-color: white;
+      selection-background-color: @selection; selection-color: @text;
     }
     QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QTextEdit#txtPreamble:focus {
-      border: 1px solid #377fdd;
+      border: 1px solid @focus;
     }
     QComboBox QLineEdit { border: none; padding: 0px; min-height: 0px; background: transparent; }
     QComboBox::drop-down { border: none; width: 24px; }
     QComboBox::down-arrow { image: url(@chevron); width: 12px; height: 12px; }
-    QComboBox QAbstractItemView { background: @panel; color: @text; selection-background-color: #075dc8; selection-color: white; }
+    QComboBox QAbstractItemView { background: @panel; color: @text; selection-background-color: @selection; selection-color: @text; }
+    QMenu::item:selected { background: @selection; color: @text; }
     QToolButton::menu-indicator, QPushButton::menu-indicator {
       image: url(@chevron); width: 10px; height: 10px;
       subcontrol-position: right center; subcontrol-origin: padding;
@@ -269,6 +243,7 @@ void KLFMainWin::refreshMacAppearance()
     {"@background", background}, {"@panel", panel}, {"@text", text},
     {"@muted", muted}, {"@border", border}, {"@softBorder", softBorder},
     {"@button", button}, {"@hover", hover}, {"@pressed", pressed},
+    {"@focus", focus}, {"@selection", selection},
     {"@chevron", dark ? ":/pics/macos-chevron-dark.svg" : ":/pics/macos-chevron-light.svg"},
     {"@disabledBackground", disabledBackground}, {"@disabled", disabled}
   };
