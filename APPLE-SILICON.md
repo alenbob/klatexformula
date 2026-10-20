@@ -18,6 +18,9 @@ focus and disabled states are also distinguished by background tone;
 the selected Options tab uses dark text on a light gray fill.
 Program-output and error-log text views use explicit dark backgrounds and light
 text, including selected text. Their legacy fixed light palette is removed.
+Scrollbars have zero visible extent throughout the application, including error
+logs, editors, symbols and library views. Wheel, trackpad and keyboard scrolling
+continue to use the existing scroll models.
 The equation canvas stays white so exported black formulas remain visible.
 The application uses Dark Aqua for its native title bar and menus. The title bar
 uses a full-size content view so the same Qt background paints behind the native

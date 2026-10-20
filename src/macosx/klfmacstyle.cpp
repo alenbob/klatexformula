@@ -303,6 +303,16 @@ void KLFMainWin::refreshMacAppearance()
       margin-top: 8px; padding: 8px 4px 4px 4px;
     }
     QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0px 4px; }
+    /* Keep the scroll models and wheel/key handling, without visible rails,
+       arrow buttons, thumbs or reserved space in any application window. */
+    QScrollBar { background: transparent; border: none; margin: 0px; padding: 0px; }
+    QScrollBar:vertical { width: 0px; min-width: 0px; max-width: 0px; }
+    QScrollBar:horizontal { height: 0px; min-height: 0px; max-height: 0px; }
+    QScrollBar::handle { background: transparent; border: none; min-width: 0px; min-height: 0px; }
+    QScrollBar::add-line, QScrollBar::sub-line {
+      background: transparent; border: none; width: 0px; height: 0px;
+    }
+    QScrollBar::add-page, QScrollBar::sub-page { background: transparent; border: none; }
     QSplitter::handle { background: transparent; }
     QToolTip { background: @panel; color: @text; border: none; padding: 6px; }
   )CSS");
