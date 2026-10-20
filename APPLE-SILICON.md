@@ -12,11 +12,14 @@ The default window is 400 × 360 logical pixels, matching the installed
 original's approximate width. It uses 24-pixel controls, minimal margins,
 and no extra headings or card frames. The original hand-drawn button icons retain
 their paths, with light ink for dark controls. Subtle grayscale gradients soften
-the window and editor background. The editor and preview have rounded borders.
-Button text, borders, hover, keyboard focus and disabled states use explicit
-contrasting colors; the selected Options tab uses dark text on a light gray fill.
+the window and editor background. Rounded editor, preview and Options surfaces
+use contrasting fills without visible outlines. Buttons, inputs, hover, keyboard
+focus and disabled states are also distinguished by background tone;
+the selected Options tab uses dark text on a light gray fill.
 The equation canvas stays white so exported black formulas remain visible.
-The application uses Dark Aqua for its native title bar and menus.
+The application uses Dark Aqua for its native title bar and menus. The title bar
+matches the content's top background and has no separator. Its appearance is
+reapplied after Cocoa finishes showing, activating or resizing the window.
 
 The macOS app icon preserves the original mathematical f on a rounded tile,
 with transparent outer corners and all standard Retina sizes. Its editable source

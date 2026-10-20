@@ -95,6 +95,7 @@ void KLFMainWin::setupMacAppearance()
   u->lblOutput->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   u->lblOutput->setMargin(4);
   u->lblOutput->setAccessibleName(tr("Rendered equation preview"));
+  u->lblOutput->setProperty("themedSurface", true);
   u->lyt_frmOutput->addWidget(u->lblOutput, 0, 0);
   u->lyt_frmOutput->setRowStretch(0, 1);
 
@@ -129,6 +130,10 @@ void KLFMainWin::setupMacAppearance()
   u->frmDetails->setMaximumWidth(320);
   u->lyt_KLFMainWin->setStretch(0, 1);
   u->lyt_KLFMainWin->setStretch(1, 0);
+  for (QFrame *frame : u->frmDetails->findChildren<QFrame *>()) {
+    if (frame->frameShape() == QFrame::HLine || frame->frameShape() == QFrame::VLine)
+      frame->hide();
+  }
   for (QComboBox *combo : u->frmDetails->findChildren<QComboBox *>()) {
     // Avoid the native popup's independently chosen light selection palette.
     combo->setView(new QListView(combo));
@@ -146,12 +151,15 @@ void KLFMainWin::setupMacAppearance()
 
   extern void klf_mac_modern_window(QWidget *);
   klf_mac_modern_window(this);
+  // Cocoa/Qt finishes configuring the title bar when the window is shown.
+  // Reapply after that work so its fill stays continuous with the content.
+  installEventFilter(this);
 }
 
 void KLFMainWin::refreshMacAppearance()
 {
   const bool dark = true;
-  const QString background = dark ? "#242424" : "#f1f1f1";
+  const QString background = dark ? "#292929" : "#f1f1f1";
   const QString panel = dark ? "#2d2d2d" : "#ffffff";
   const QString text = dark ? "#eeeeee" : "#202020";
   const QString muted = dark ? "#b5b5b5" : "#606060";
@@ -207,8 +215,8 @@ void KLFMainWin::refreshMacAppearance()
   }
   QString css = QString::fromLatin1(R"CSS(
     QMainWindow#KLFMainWin {
-      background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-        stop:0 #353535, stop:0.45 #292929, stop:1 #202020); color: @text;
+      background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #292929, stop:0.3 #292929, stop:1 #202020); color: @text;
     }
     KLFLatexSymbols, QWidget#frmSymbolList { background: @background; color: @text; }
     QLabel { color: @text; }
@@ -216,76 +224,78 @@ void KLFMainWin::refreshMacAppearance()
       background: transparent; border: none;
     }
     QTextEdit#txtLatex {
-      background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #343434, stop:1 #282828);
-      color: @text; border: 1px solid @softBorder;
+      background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #383838, stop:1 #303030);
+      color: @text; border: 1px solid transparent;
       border-radius: 10px; padding: 6px;
       selection-background-color: @selection; selection-color: @text;
     }
-    QTextEdit#txtLatex:focus { border: 1px solid @focus; }
+    QTextEdit#txtLatex:focus {
+      background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #404040, stop:1 #333333);
+    }
     QLabel#lblOutput {
-      background: #ffffff; color: #202020; border: 1px solid @softBorder;
+      background: #ffffff; color: #202020; border: 1px solid transparent;
       border-radius: 10px;
     }
     QLabel#lblOutput[realTimeLatexError="true"] {
-      background: @hover; color: @text; border: 2px solid @focus;
+      background: @hover; color: @text; border: 1px solid transparent;
     }
     QPushButton, QToolButton {
       background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #444444, stop:1 #353535);
-      color: @text; border: 1px solid @softBorder;
+      color: @text; border: 1px solid transparent;
       border-radius: 3px; padding: 0px 6px; min-height: 22px;
       outline: none;
     }
     QPushButton:hover, QToolButton:hover { background: @hover; }
     QPushButton:pressed, QToolButton:pressed { background: @pressed; }
-    QPushButton:checked, QToolButton:checked { background: @pressed; color: @text; border: 1px solid @focus; }
-    QPushButton:focus, QToolButton:focus { border: 2px solid @focus; padding: 0px 5px; }
+    QPushButton:checked, QToolButton:checked { background: @pressed; color: @text; }
+    QPushButton:focus, QToolButton:focus { background: #606060; }
     QPushButton:disabled, QToolButton:disabled, QPushButton#btnEvaluate:disabled {
-      color: @disabled; background: @disabledBackground; border: 1px solid @softBorder;
+      color: @disabled; background: @disabledBackground; border: 1px solid transparent;
     }
     KLFPixmapButton {
-      background: #ffffff; color: #202020; border: 1px solid #999999;
+      background: #ffffff; color: #202020; border: 1px solid transparent;
       border-radius: 4px; padding: 2px; min-height: 24px;
     }
-    KLFPixmapButton:hover { background: #eeeeee; border: 1px solid #555555; }
+    KLFPixmapButton:hover { background: #dddddd; }
     KLFPixmapButton:pressed { background: #d5d5d5; }
     QTabWidget::pane {
-      background: @panel; border: 1px solid @softBorder; border-radius: 4px;
+      background: #303030; border: none; border-radius: 8px;
       top: -1px;
     }
     QTabBar::tab {
-      background: @button; color: @text; border: 1px solid @border;
+      background: @button; color: @text; border: 1px solid transparent;
       border-radius: 4px; padding: 4px 6px; margin: 0px 2px 4px 0px;
     }
     QTabBar::tab:hover:!selected { background: @hover; color: @text; }
     QTabBar::tab:selected, QTabBar::tab:selected:!active {
-      background: #d0d0d0; color: #202020; border: 1px solid #eeeeee;
+      background: #d0d0d0; color: #202020; border: 1px solid transparent;
     }
     QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit#txtPreamble {
-      background: @panel; color: @text; border: 1px solid @border;
+      background: #404040; color: @text; border: 1px solid transparent;
       border-radius: 6px; padding: 2px 5px; min-height: 20px;
       selection-background-color: @selection; selection-color: @text;
     }
     QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QTextEdit#txtPreamble:focus {
-      border: 1px solid @focus;
+      background: #4d4d4d;
     }
     QComboBox QLineEdit { border: none; padding: 0px; min-height: 0px; background: transparent; }
     QComboBox::drop-down { border: none; width: 24px; }
     QComboBox::down-arrow { image: url(@chevron); width: 12px; height: 12px; }
     QComboBox QAbstractItemView { background: @panel; color: @text; selection-background-color: @selection; selection-color: @text; }
     QComboBox QAbstractItemView::item:selected { background: @selection; color: @text; }
-    QMenu { background: @panel; color: @text; border: 1px solid @softBorder; }
+    QMenu { background: @panel; color: @text; border: none; }
     QMenu::item:selected { background: @selection; color: @text; }
     QToolButton::menu-indicator, QPushButton::menu-indicator {
       image: url(@chevron); width: 10px; height: 10px;
       subcontrol-position: right center; subcontrol-origin: padding;
     }
     QGroupBox {
-      color: @text; border: 1px solid @softBorder; border-radius: 4px;
-      margin-top: 8px; padding-top: 8px;
+      color: @text; background: #373737; border: none; border-radius: 8px;
+      margin-top: 8px; padding: 8px 4px 4px 4px;
     }
     QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0px 4px; }
     QSplitter::handle { background: transparent; }
-    QToolTip { background: @panel; color: @text; border: 1px solid @border; padding: 6px; }
+    QToolTip { background: @panel; color: @text; border: none; padding: 6px; }
   )CSS");
   const QList<QPair<QString, QString> > tokens = {
     {"@background", background}, {"@panel", panel}, {"@text", text},

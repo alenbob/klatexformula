@@ -2550,6 +2550,15 @@ void KLFMainWin::childEvent(QChildEvent *e)
 
 bool KLFMainWin::eventFilter(QObject *obj, QEvent *e)
 {
+#ifdef KLF_WS_MAC
+  if (obj == this && (e->type() == QEvent::Show || e->type() == QEvent::WindowActivate ||
+                      e->type() == QEvent::Resize)) {
+    QTimer::singleShot(0, this, [this]() {
+      extern void klf_mac_modern_window(QWidget *);
+      klf_mac_modern_window(this);
+    });
+  }
+#endif
 
   // even with QShortcuts, we still need this event handler (why?)
   if (obj == u->txtLatex) {
